@@ -45,8 +45,8 @@ public final class CoinageGameplayEvents {
         loose.shrink((int) deposit.accepted());
         player.take(entity, (int) deposit.accepted());
         player.awardStat(Stats.ITEM_PICKED_UP.get(CoinageItems.coin(denomination)), (int) deposit.accepted());
-        player.displayClientMessage(Component.translatable("message.the_coinage.received",
-            deposit.accepted(), Component.translatable(denomination.translationKey())), true);
+        player.sendOverlayMessage(Component.translatable("message.the_coinage.received",
+            deposit.accepted(), Component.translatable(denomination.translationKey())));
         NeoForge.EVENT_BUS.post(new CoinageEvents.PurseChanged(player, before.breakdown(),
             PurseStorage.read(replacement).breakdown()));
         NeoForge.EVENT_BUS.post(new CoinageEvents.CurrencyReceived(player,

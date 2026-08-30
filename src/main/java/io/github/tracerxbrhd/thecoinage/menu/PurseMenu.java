@@ -60,7 +60,7 @@ public final class PurseMenu extends AbstractContainerMenu {
     @Override
     public boolean clickMenuButton(Player player, int id) {
         if (id < 0 || id >= Denomination.values().length || !stillValid(player)) return false;
-        if (player.level().isClientSide) return true;
+        if (player.level().isClientSide()) return true;
         Denomination denomination = Denomination.values()[id];
         ItemStack purse = playerInventory.getItem(purseSlot);
         int maximum = CoinageItems.coin(denomination).getDefaultMaxStackSize();

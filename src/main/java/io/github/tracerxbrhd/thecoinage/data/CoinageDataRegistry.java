@@ -7,33 +7,30 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 /** Immutable snapshots swapped only after a complete datapack scan. */
 public final class CoinageDataRegistry {
-    private static volatile List<CoinageTradeDefinition> trades = List.of();
     private static volatile List<MobDropDefinition> mobDrops = List.of();
 
     private CoinageDataRegistry() {}
 
     public static void reload(ResourceManager manager) {
-        trades = load(manager, "the_coinage/trades", CoinageTradeDefinition::parse);
         mobDrops = load(manager, "the_coinage/mob_drops", MobDropDefinition::parse);
-        TheCoinage.LOGGER.info("Loaded {} Coinage trades and {} mob drop definitions", trades.size(), mobDrops.size());
+        TheCoinage.LOGGER.info("Loaded {} Coinage mob drop definitions", mobDrops.size());
     }
 
-    public static List<CoinageTradeDefinition> trades() { return trades; }
     public static List<MobDropDefinition> mobDrops() { return mobDrops; }
 
     private static <T> List<T> load(ResourceManager manager, String root, Parser<T> parser) {
         List<T> loaded = new ArrayList<>();
-        for (Map.Entry<ResourceLocation, Resource> entry : manager.listResources(root,
+        for (Map.Entry<Identifier, Resource> entry : manager.listResources(root,
             id -> id.getPath().endsWith(".json")).entrySet()) {
-            ResourceLocation file = entry.getKey();
+            Identifier file = entry.getKey();
             String path = file.getPath().substring(root.length() + 1, file.getPath().length() - 5);
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(file.getNamespace(), path);
+            Identifier id = Identifier.fromNamespaceAndPath(file.getNamespace(), path);
             try (Reader reader = entry.getValue().openAsReader()) {
                 loaded.add(parser.parse(id, JsonParser.parseReader(reader).getAsJsonObject()));
             } catch (Exception exception) {
@@ -50,5 +47,5 @@ public final class CoinageDataRegistry {
     }
 
     @FunctionalInterface
-    private interface Parser<T> { T parse(ResourceLocation id, com.google.gson.JsonObject json); }
+    private interface Parser<T> { T parse(Identifier id, com.google.gson.JsonObject json); }
 }

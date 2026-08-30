@@ -1,0 +1,17 @@
+{
+  "gives": {
+    "count": 2,
+    "id": "minecraft:ender_pearl"
+  },
+  "max_uses": 4,
+  "wants": {
+    "components": {
+      "the_coinage:merchant_price": {
+        "count": 2,
+        "denomination": "silver"
+      }
+    },
+    "count": 2,
+    "id": "the_coinage:silver_coin"
+  }
+}

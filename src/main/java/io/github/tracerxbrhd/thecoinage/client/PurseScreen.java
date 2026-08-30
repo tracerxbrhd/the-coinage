@@ -3,7 +3,7 @@ package io.github.tracerxbrhd.thecoinage.client;
 import io.github.tracerxbrhd.thecoinage.api.currency.CurrencyMath;
 import io.github.tracerxbrhd.thecoinage.api.currency.Denomination;
 import io.github.tracerxbrhd.thecoinage.menu.PurseMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -11,9 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public final class PurseScreen extends AbstractContainerScreen<PurseMenu> {
     public PurseScreen(PurseMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        imageWidth = 176;
-        imageHeight = 166;
+        super(menu, inventory, title, 176, 166);
         inventoryLabelY = 72;
     }
 
@@ -31,7 +29,8 @@ public final class PurseScreen extends AbstractContainerScreen<PurseMenu> {
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
         graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF201A16);
         graphics.fill(leftPos + 4, topPos + 4, leftPos + imageWidth - 4, topPos + 70, 0xFF3A2A20);
         graphics.fill(leftPos + 4, topPos + 75, leftPos + imageWidth - 4, topPos + imageHeight - 4, 0xFF8B8B8B);
@@ -49,20 +48,14 @@ public final class PurseScreen extends AbstractContainerScreen<PurseMenu> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, 8, 6, 0xF2C46D, false);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, title, 8, 6, 0xF2C46D, false);
         for (Denomination denomination : Denomination.values()) {
-            graphics.drawString(font, Component.translatable("screen.the_coinage.purse.balance",
+            graphics.text(font, Component.translatable("screen.the_coinage.purse.balance",
                 Component.translatable(denomination.translationKey()),
                 CurrencyMath.formatNormalized(menu.balance(denomination))), 12, 21 + denomination.ordinal() * 18,
                 0xF4E5CB, false);
         }
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xFFFFFF, false);
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
-        renderTooltip(graphics, mouseX, mouseY);
+        graphics.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xFFFFFF, false);
     }
 }

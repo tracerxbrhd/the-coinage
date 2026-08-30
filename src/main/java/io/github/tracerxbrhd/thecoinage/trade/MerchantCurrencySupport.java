@@ -17,6 +17,10 @@ public final class MerchantCurrencySupport {
         return result.get(CoinageDataComponents.MERCHANT_REWARD.get());
     }
 
+    public static boolean isCurrencyOffer(MerchantOffer offer) {
+        return price(offer) != null || reward(offer.getResult()) != null;
+    }
+
     public static CurrencyBreakdown breakdown(CurrencyAmount amount) {
         return CurrencyBreakdown.ZERO.with(amount.denomination(), amount.count());
     }

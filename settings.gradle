@@ -6,13 +6,17 @@ pluginManagement {
     }
 }
 
-plugins { id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0' }
+plugins { id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0' }
 rootProject.name = 'the-coinage'
 
+def configuredUApiBuild = providers.gradleProperty('u_api_local_path').orNull
+def configuredUApiDirectory = configuredUApiBuild ? file(configuredUApiBuild) : null
 def localUApiBuild = file('u-api')
-def siblingUApiBuild = file('../u-api')
-def uApiBuild = localUApiBuild.isDirectory() ? localUApiBuild
+def siblingUApiBuild = file('../u-api-26.2')
+def uApiBuild = configuredUApiDirectory != null && configuredUApiDirectory.isDirectory() ? configuredUApiDirectory
+    : (localUApiBuild.isDirectory() ? localUApiBuild
     : (siblingUApiBuild.isDirectory() ? siblingUApiBuild : null)
+    )
 
 if (uApiBuild != null) {
     includeBuild(uApiBuild) {

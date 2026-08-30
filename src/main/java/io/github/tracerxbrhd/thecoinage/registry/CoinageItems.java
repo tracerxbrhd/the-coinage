@@ -21,14 +21,14 @@ public final class CoinageItems {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB,
         TheCoinage.MOD_ID);
 
-    public static final DeferredItem<Item> COPPER_COIN = ITEMS.register("copper_coin",
-        () -> new CoinItem(Denomination.COPPER, new Item.Properties()));
-    public static final DeferredItem<Item> SILVER_COIN = ITEMS.register("silver_coin",
-        () -> new CoinItem(Denomination.SILVER, new Item.Properties()));
-    public static final DeferredItem<Item> GOLD_COIN = ITEMS.register("gold_coin",
-        () -> new CoinItem(Denomination.GOLD, new Item.Properties()));
-    public static final DeferredItem<Item> COIN_PURSE = ITEMS.register("coin_purse",
-        () -> new CoinPurseItem(new Item.Properties().stacksTo(1)
+    public static final DeferredItem<Item> COPPER_COIN = ITEMS.registerItem("copper_coin",
+        properties -> new CoinItem(Denomination.COPPER, properties));
+    public static final DeferredItem<Item> SILVER_COIN = ITEMS.registerItem("silver_coin",
+        properties -> new CoinItem(Denomination.SILVER, properties));
+    public static final DeferredItem<Item> GOLD_COIN = ITEMS.registerItem("gold_coin",
+        properties -> new CoinItem(Denomination.GOLD, properties));
+    public static final DeferredItem<Item> COIN_PURSE = ITEMS.registerItem("coin_purse",
+        properties -> new CoinPurseItem(properties.stacksTo(1)
             .component(CoinageDataComponents.PURSE_CONTENTS.get(), PurseContents.EMPTY)));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("the_coinage",

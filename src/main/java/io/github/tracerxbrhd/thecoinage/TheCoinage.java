@@ -17,8 +17,7 @@ import io.github.tracerxbrhd.thecoinage.registry.CoinageDataComponents;
 import io.github.tracerxbrhd.thecoinage.registry.CoinageItems;
 import io.github.tracerxbrhd.thecoinage.registry.CoinageMenus;
 import io.github.tracerxbrhd.thecoinage.reward.CurrencyRewardService;
-import io.github.tracerxbrhd.thecoinage.trade.CoinageTrades;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -43,7 +42,6 @@ public final class TheCoinage {
         NeoForge.EVENT_BUS.register(CoinageCommands.class);
         NeoForge.EVENT_BUS.register(CoinageReloadListener.class);
         NeoForge.EVENT_BUS.register(CoinageGameplayEvents.class);
-        NeoForge.EVENT_BUS.register(CoinageTrades.class);
 
         apiRegistration = UApiServices.register(CoinageApi.class, new DefaultCoinageApi(), ServiceScope.GLOBAL);
         RewardRegistry.registerProvider(id("currency"), (context, data, random) -> {
@@ -58,7 +56,7 @@ public final class TheCoinage {
         });
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 }

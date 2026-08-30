@@ -1,0 +1,19 @@
+{
+  "gives": {
+    "components": {
+      "the_coinage:merchant_reward": {
+        "count": 7,
+        "denomination": "copper"
+      }
+    },
+    "count": 7,
+    "id": "the_coinage:copper_coin"
+  },
+  "max_uses": 16,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 20,
+    "id": "minecraft:wheat"
+  },
+  "xp": 2
+}

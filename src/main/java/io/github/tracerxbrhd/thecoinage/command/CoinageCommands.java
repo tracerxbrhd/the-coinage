@@ -25,12 +25,12 @@ public final class CoinageCommands {
         event.getDispatcher().register(Commands.literal("coinage")
             .then(Commands.literal("balance")
                 .executes(context -> balance(context.getSource(), context.getSource().getPlayerOrException()))
-                .then(Commands.argument("player", EntityArgument.player()).requires(source -> source.hasPermission(2))
+                .then(Commands.argument("player", EntityArgument.player()).requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                     .executes(context -> balance(context.getSource(), EntityArgument.getPlayer(context, "player")))))
-            .then(Commands.literal("purse").requires(source -> source.hasPermission(2))
+            .then(Commands.literal("purse").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("player", EntityArgument.player())
                     .executes(context -> purse(context.getSource(), EntityArgument.getPlayer(context, "player")))))
-            .then(Commands.literal("give").requires(source -> source.hasPermission(2))
+            .then(Commands.literal("give").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("amount", LongArgumentType.longArg(1))
                         .then(Commands.argument("denomination", StringArgumentType.word())
@@ -39,7 +39,7 @@ public final class CoinageCommands {
                             .executes(context -> give(context.getSource(), EntityArgument.getPlayer(context, "player"),
                                 LongArgumentType.getLong(context, "amount"),
                                 StringArgumentType.getString(context, "denomination")))))))
-            .then(Commands.literal("take").requires(source -> source.hasPermission(2))
+            .then(Commands.literal("take").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("amount", LongArgumentType.longArg(1))
                         .then(Commands.argument("denomination", StringArgumentType.word())
@@ -48,7 +48,7 @@ public final class CoinageCommands {
                             .executes(context -> take(context.getSource(), EntityArgument.getPlayer(context, "player"),
                                 LongArgumentType.getLong(context, "amount"),
                                 StringArgumentType.getString(context, "denomination")))))))
-            .then(Commands.literal("reload").requires(source -> source.hasPermission(2)).executes(context -> {
+            .then(Commands.literal("reload").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
                 var source = context.getSource();
                 ReloadCommand.reloadPacks(source.getServer().getPackRepository().getSelectedIds(), source);
                 return 1;

@@ -1,0 +1,18 @@
+{
+  "gives": {
+    "id": "minecraft:compass"
+  },
+  "max_uses": 8,
+  "reputation_discount": 0.05,
+  "wants": {
+    "components": {
+      "the_coinage:merchant_price": {
+        "count": 28,
+        "denomination": "copper"
+      }
+    },
+    "count": 28,
+    "id": "the_coinage:copper_coin"
+  },
+  "xp": 8
+}

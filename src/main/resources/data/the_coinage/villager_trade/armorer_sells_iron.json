@@ -1,0 +1,18 @@
+{
+  "gives": {
+    "count": 8,
+    "id": "minecraft:iron_ingot"
+  },
+  "max_uses": 8,
+  "reputation_discount": 0.05,
+  "wants": {
+    "components": {
+      "the_coinage:merchant_price": {
+        "count": 1,
+        "denomination": "silver"
+      }
+    },
+    "id": "the_coinage:silver_coin"
+  },
+  "xp": 12
+}

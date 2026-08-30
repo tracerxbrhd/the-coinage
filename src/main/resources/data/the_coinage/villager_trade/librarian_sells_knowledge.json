@@ -1,0 +1,19 @@
+{
+  "gives": {
+    "count": 2,
+    "id": "minecraft:bookshelf"
+  },
+  "max_uses": 8,
+  "reputation_discount": 0.05,
+  "wants": {
+    "components": {
+      "the_coinage:merchant_price": {
+        "count": 24,
+        "denomination": "copper"
+      }
+    },
+    "count": 24,
+    "id": "the_coinage:copper_coin"
+  },
+  "xp": 8
+}

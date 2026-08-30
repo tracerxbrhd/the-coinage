@@ -5,7 +5,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MerchantContainerMixin",
-    "MerchantResultSlotMixin"
+    "MerchantResultSlotMixin",
+    "VillagerMixin",
+    "WanderingTraderMixin"
   ],
   "client": [],
   "injectors": { "defaultRequire": 1 },

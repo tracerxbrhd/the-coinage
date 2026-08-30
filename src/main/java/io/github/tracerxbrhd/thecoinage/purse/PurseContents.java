@@ -16,7 +16,7 @@ public record PurseContents(int formatVersion, long copper, long silver, long go
     public static final int CURRENT_FORMAT = 1;
     public static final PurseContents EMPTY = new PurseContents(CURRENT_FORMAT, 0, 0, 0);
     public static final Codec<PurseContents> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.INT.optionalFieldOf("format_version", CURRENT_FORMAT).forGetter(PurseContents::formatVersion),
+        Codec.INT.fieldOf("format_version").forGetter(PurseContents::formatVersion),
         Codec.LONG.optionalFieldOf("copper", 0L).forGetter(PurseContents::copper),
         Codec.LONG.optionalFieldOf("silver", 0L).forGetter(PurseContents::silver),
         Codec.LONG.optionalFieldOf("gold", 0L).forGetter(PurseContents::gold)

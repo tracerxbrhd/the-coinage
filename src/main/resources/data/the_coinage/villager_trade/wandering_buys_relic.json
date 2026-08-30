@@ -1,0 +1,17 @@
+{
+  "gives": {
+    "components": {
+      "the_coinage:merchant_reward": {
+        "count": 17,
+        "denomination": "copper"
+      }
+    },
+    "count": 17,
+    "id": "the_coinage:copper_coin"
+  },
+  "max_uses": 8,
+  "wants": {
+    "count": 8,
+    "id": "minecraft:amethyst_shard"
+  }
+}

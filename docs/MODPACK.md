@@ -15,23 +15,30 @@ Changing ratios changes generated exchange offers and all normalized-value calcu
 
 ## Trades
 
-Add JSON files below `data/<namespace>/the_coinage/trades/`. A malformed definition is logged and skipped.
+Minecraft 26.2 exposes villager trades as a native data registry. Add a trade below
+`data/<namespace>/villager_trade/`, then include its ID in the appropriate vanilla trade tag, for example
+`data/minecraft/tags/villager_trade/farmer/level_2.json`.
 
 ```json
 {
-  "format_version": 1,
-  "target": "minecraft:farmer",
-  "level": 2,
-  "weight": 1,
-  "cost": { "type": "currency", "denomination": "copper", "count": 24 },
-  "result": { "type": "item", "item": "minecraft:bread", "count": 8 },
+  "wants": {
+    "id": "the_coinage:copper_coin",
+    "count": 24,
+    "components": {
+      "the_coinage:merchant_price": { "denomination": "copper", "count": 24 }
+    }
+  },
+  "gives": { "id": "minecraft:bread", "count": 8 },
   "max_uses": 12,
   "xp": 5,
-  "price_multiplier": 0.05
+  "reputation_discount": 0.05
 }
 ```
 
-Targets are villager profession IDs or `wandering_generic` / `wandering_rare`. Both `cost` and `result` support `item` or `currency`; currency values may exceed normal stack limits.
+Use the `the_coinage:merchant_price` component on `wants` for a purse-aware price. Use
+`the_coinage:merchant_reward` on a Coinage coin in `gives` for a centrally delivered currency reward. The component's
+`count` is authoritative and may exceed the visual stack size. Dynamic Wandering Trader exchange offers are generated
+from the configured denomination ratios rather than fixed datapack values.
 
 ## Mob drops
 

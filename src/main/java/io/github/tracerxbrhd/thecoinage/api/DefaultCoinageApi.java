@@ -8,12 +8,12 @@ import io.github.tracerxbrhd.thecoinage.payment.PlayerFundsService;
 import io.github.tracerxbrhd.thecoinage.purse.ActivePurseResolver;
 import io.github.tracerxbrhd.thecoinage.reward.CurrencyRewardService;
 import java.util.Optional;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 public final class DefaultCoinageApi implements CoinageApi {
-    @Override public ResourceLocation serviceId() { return TheCoinage.id("currency"); }
+    @Override public Identifier serviceId() { return TheCoinage.id("currency"); }
     @Override public CurrencyRules currencyRules() { return CoinageServerConfig.currencyRules(); }
     @Override public Optional<ItemStack> findActivePurse(ServerPlayer player) {
         return ActivePurseResolver.find(player).map(handle -> handle.get().copy());
