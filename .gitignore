@@ -5,6 +5,7 @@ run/
 run-*/
 .idea/
 *.iml
+*.class
 .classpath
 .project
 .settings/
