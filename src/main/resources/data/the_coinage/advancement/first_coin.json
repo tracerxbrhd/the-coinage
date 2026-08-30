@@ -1,0 +1,19 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": { "id": "the_coinage:copper_coin" },
+    "title": { "translate": "advancement.the_coinage.first_coin.title" },
+    "description": { "translate": "advancement.the_coinage.first_coin.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "coin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": "#the_coinage:coins" }] }
+    }
+  },
+  "requirements": [["coin"]]
+}

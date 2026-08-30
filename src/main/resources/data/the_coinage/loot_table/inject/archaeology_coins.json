@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:archaeology",
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [{ "condition": "minecraft:random_chance", "chance": 0.14 }],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "the_coinage:copper_coin",
+          "weight": 84,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 4 } }]
+        },
+        { "type": "minecraft:item", "name": "the_coinage:silver_coin", "weight": 15 },
+        { "type": "minecraft:item", "name": "the_coinage:gold_coin", "weight": 1 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "entries": [
+    "the_coinage:simple_dungeon",
+    "the_coinage:abandoned_mineshaft",
+    "the_coinage:stronghold_library",
+    "the_coinage:buried_treasure",
+    "the_coinage:ruined_portal",
+    "the_coinage:bastion_treasure",
+    "the_coinage:ancient_city",
+    "the_coinage:trial_chambers_reward",
+    "the_coinage:archaeology_desert_pyramid",
+    "the_coinage:archaeology_desert_well",
+    "the_coinage:archaeology_ocean_ruin_cold",
+    "the_coinage:archaeology_ocean_ruin_warm",
+    "the_coinage:archaeology_trail_ruins_common",
+    "the_coinage:archaeology_trail_ruins_rare"
+  ]
+}

@@ -1,0 +1,181 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          property() {
+            local value
+            value="$(grep -E "^$1=" gradle.properties | head -n1 | cut -d= -f2- | xargs)"
+            [[ -n "$value" ]] || { echo "Missing gradle property: $1" >&2; exit 1; }
+            printf '%s' "$value"
+          }
+          mod_version="$(property mod_version)"
+          minecraft="$(property minecraft_version)"
+          mod_name="$(property mod_name)"
+          java="$(property java_version)"
+          uapi="$(property u_api_version)"
+          tag="$GITHUB_REF_NAME"
+          channel=release
+          suffix=""
+          prerelease=false
+          featured=true
+          if [[ "$tag" == "v${mod_version}-beta+mc${minecraft}" ]]; then
+            channel=beta; suffix=-beta; prerelease=true; featured=false
+          elif [[ "$tag" == "v${mod_version}-alpha+mc${minecraft}" ]]; then
+            channel=alpha; suffix=-alpha; prerelease=true; featured=false
+          elif [[ "$tag" != "v${mod_version}+mc${minecraft}" ]]; then
+            echo "Tag '$tag' does not match gradle.properties." >&2; exit 1
+          fi
+          {
+            echo "mod_version=$mod_version"
+            echo "minecraft=$minecraft"
+            echo "java=$java"
+            echo "uapi=$uapi"
+            echo "channel=$channel"
+            echo "version=${mod_version}${suffix}+mc${minecraft}"
+            echo "title=${mod_name} ${mod_version}${suffix} for Minecraft ${minecraft}"
+            echo "prerelease=$prerelease"
+            echo "featured=$featured"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Resolve U-API source
+        id: uapi
+        shell: bash
+        env:
+          U_API_REPOSITORY: ${{ vars.U_API_REPOSITORY }}
+          U_API_REF: ${{ vars.U_API_REF }}
+        run: |
+          echo "repository=${U_API_REPOSITORY:-${GITHUB_REPOSITORY_OWNER}/u-api}" >> "$GITHUB_OUTPUT"
+          echo "ref=${U_API_REF:-v${{ steps.meta.outputs.uapi }}+mc${{ steps.meta.outputs.minecraft }}}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout U-API
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.uapi.outputs.repository }}
+          ref: ${{ steps.uapi.outputs.ref }}
+          path: u-api
+          token: ${{ secrets.U_API_REPOSITORY_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ steps.meta.outputs.java }}
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Validate publishing configuration
+        id: publishing
+        shell: bash
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          MODRINTH_PROJECT_ID: ${{ vars.MODRINTH_PROJECT_ID }}
+          U_API_MODRINTH_PROJECT_ID: ${{ vars.U_API_MODRINTH_PROJECT_ID }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_PROJECT_ID: ${{ vars.CURSEFORGE_PROJECT_ID }}
+          U_API_CURSEFORGE_PROJECT_ID: ${{ vars.U_API_CURSEFORGE_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+          [[ -n "$MODRINTH_TOKEN" ]] || { echo "Missing MODRINTH_TOKEN" >&2; exit 1; }
+          [[ -n "$MODRINTH_PROJECT_ID" ]] || { echo "Missing MODRINTH_PROJECT_ID" >&2; exit 1; }
+          [[ -n "$U_API_MODRINTH_PROJECT_ID" ]] || { echo "Missing U_API_MODRINTH_PROJECT_ID" >&2; exit 1; }
+          curseforge=false
+          if [[ -n "$CURSEFORGE_TOKEN" && -n "$CURSEFORGE_PROJECT_ID" ]]; then
+            [[ -n "$U_API_CURSEFORGE_PROJECT_ID" ]] || { echo "Missing U_API_CURSEFORGE_PROJECT_ID" >&2; exit 1; }
+            curseforge=true
+          fi
+          echo "curseforge=$curseforge" >> "$GITHUB_OUTPUT"
+
+      - name: Build and test
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon clean build
+
+      - name: Select artifact
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort)
+          [[ ${#jars[@]} -eq 1 ]] || { printf 'Expected one release JAR, found %s\n' "${#jars[@]}" >&2; exit 1; }
+          [[ -s "${jars[0]}" ]] || exit 1
+          echo "path=${jars[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare release notes
+        shell: bash
+        env:
+          MOD_VERSION: ${{ steps.meta.outputs.mod_version }}
+          MINECRAFT: ${{ steps.meta.outputs.minecraft }}
+        run: |
+          python - <<'PY'
+          import os, pathlib, re
+          text = pathlib.Path("CHANGELOG.md").read_text(encoding="utf-8")
+          version = re.escape(os.environ["MOD_VERSION"])
+          match = re.search(rf"(?ms)^## {version}\s*$\n(.*?)(?=^## |\Z)", text)
+          notes = match.group(1).strip() if match else "Initial release."
+          notes += f"\n\n## Compatibility\n\n- Minecraft: {os.environ['MINECRAFT']}\n- Loader: NeoForge\n- Requires: U-API\n"
+          pathlib.Path("release_notes.md").write_text(notes, encoding="utf-8")
+          PY
+
+      - name: Publish to Modrinth
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: ${{ vars.MODRINTH_PROJECT_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          modrinth-featured: ${{ steps.meta.outputs.featured }}
+          modrinth-dependencies: |
+            ${{ vars.U_API_MODRINTH_PROJECT_ID }}(required)
+          files: ${{ steps.artifact.outputs.path }}
+          name: ${{ steps.meta.outputs.title }}
+          version: ${{ steps.meta.outputs.version }}
+          version-type: ${{ steps.meta.outputs.channel }}
+          changelog-file: release_notes.md
+          loaders: neoforge
+          game-versions: ${{ steps.meta.outputs.minecraft }}
+          java: ${{ steps.meta.outputs.java }}
+
+      - name: Publish to CurseForge
+        if: steps.publishing.outputs.curseforge == 'true'
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          curseforge-id: ${{ vars.CURSEFORGE_PROJECT_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          curseforge-dependencies: |
+            ${{ vars.U_API_CURSEFORGE_PROJECT_ID }}(required)
+          files: ${{ steps.artifact.outputs.path }}
+          name: ${{ steps.meta.outputs.title }}
+          version: ${{ steps.meta.outputs.version }}
+          version-type: ${{ steps.meta.outputs.channel }}
+          changelog-file: release_notes.md
+          loaders: neoforge
+          game-versions: ${{ steps.meta.outputs.minecraft }}
+          java: ${{ steps.meta.outputs.java }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.meta.outputs.title }}
+          body_path: release_notes.md
+          files: ${{ steps.artifact.outputs.path }}
+          prerelease: ${{ steps.meta.outputs.prerelease }}

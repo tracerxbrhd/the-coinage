@@ -1,0 +1,8 @@
+{
+  "format_version": 1,
+  "entity_tag": "the_coinage:humanoid_coin_bearers",
+  "chance": 0.0075,
+  "denomination": "copper",
+  "min": 1,
+  "max": 4
+}

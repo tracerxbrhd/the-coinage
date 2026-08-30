@@ -1,0 +1,11 @@
+{
+  "format_version": 1,
+  "target": "minecraft:cartographer",
+  "level": 2,
+  "weight": 1,
+  "cost": { "type": "currency", "denomination": "copper", "count": 28 },
+  "result": { "type": "item", "item": "minecraft:compass", "count": 1 },
+  "max_uses": 8,
+  "xp": 8,
+  "price_multiplier": 0.05
+}

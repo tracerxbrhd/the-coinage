@@ -1,0 +1,19 @@
+{
+  "parent": "the_coinage:first_coin",
+  "display": {
+    "icon": { "id": "the_coinage:coin_purse" },
+    "title": { "translate": "advancement.the_coinage.first_purse.title" },
+    "description": { "translate": "advancement.the_coinage.first_purse.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "purse": {
+      "trigger": "minecraft:recipe_crafted",
+      "conditions": { "recipe_id": "the_coinage:coin_purse" }
+    }
+  },
+  "requirements": [["purse"]]
+}

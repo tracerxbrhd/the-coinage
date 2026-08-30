@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [{ "condition": "minecraft:random_chance", "chance": 0.18 }],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "the_coinage:copper_coin",
+          "weight": 75,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 7 } }]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "the_coinage:silver_coin",
+          "weight": 23,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }]
+        },
+        { "type": "minecraft:item", "name": "the_coinage:gold_coin", "weight": 2 }
+      ]
+    }
+  ]
+}

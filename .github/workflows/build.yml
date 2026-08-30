@@ -1,0 +1,67 @@
+name: Build
+
+on:
+  push:
+    branches: [master, "port/26.2"]
+  pull_request:
+    branches: [master, "port/26.2"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout The Coinage
+        uses: actions/checkout@v4
+
+      - name: Resolve U-API source
+        id: uapi
+        shell: bash
+        env:
+          U_API_REPOSITORY: ${{ vars.U_API_REPOSITORY }}
+          U_API_REF: ${{ vars.U_API_REF }}
+        run: |
+          set -euo pipefail
+          property() { grep -E "^$1=" gradle.properties | head -n1 | cut -d= -f2- | xargs; }
+          version="$(property u_api_version)"
+          minecraft="$(property minecraft_version)"
+          echo "repository=${U_API_REPOSITORY:-${GITHUB_REPOSITORY_OWNER}/u-api}" >> "$GITHUB_OUTPUT"
+          echo "ref=${U_API_REF:-v${version}+mc${minecraft}}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout U-API
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.uapi.outputs.repository }}
+          ref: ${{ steps.uapi.outputs.ref }}
+          path: u-api
+          token: ${{ secrets.U_API_REPOSITORY_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Read Java version
+        id: java
+        shell: bash
+        run: echo "version=$(grep -E '^java_version=' gradle.properties | cut -d= -f2- | xargs)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ steps.java.outputs.version }}
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and test
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon clean build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: the-coinage-${{ github.sha }}
+          path: build/libs/*.jar

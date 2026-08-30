@@ -1,0 +1,17 @@
+.gradle/
+build/
+out/
+run/
+run-*/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+repo/
+libs/
+*.log
+crash-reports/
+release_notes.md
+release-artifacts/
+src/generated/resources/.cache/

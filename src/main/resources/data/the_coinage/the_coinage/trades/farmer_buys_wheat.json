@@ -1,0 +1,11 @@
+{
+  "format_version": 1,
+  "target": "minecraft:farmer",
+  "level": 1,
+  "weight": 1,
+  "cost": { "type": "item", "item": "minecraft:wheat", "count": 20 },
+  "result": { "type": "currency", "denomination": "copper", "count": 7 },
+  "max_uses": 16,
+  "xp": 2,
+  "price_multiplier": 0.05
+}

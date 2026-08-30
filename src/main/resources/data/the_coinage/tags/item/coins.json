@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "the_coinage:copper_coin",
+    "the_coinage:silver_coin",
+    "the_coinage:gold_coin"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "format_version": 1,
+  "target": "minecraft:librarian",
+  "level": 2,
+  "weight": 1,
+  "cost": { "type": "currency", "denomination": "copper", "count": 24 },
+  "result": { "type": "item", "item": "minecraft:bookshelf", "count": 2 },
+  "max_uses": 8,
+  "xp": 8,
+  "price_multiplier": 0.05
+}

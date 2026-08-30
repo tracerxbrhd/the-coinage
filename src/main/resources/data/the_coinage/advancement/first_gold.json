@@ -1,0 +1,19 @@
+{
+  "parent": "the_coinage:first_coin",
+  "display": {
+    "icon": { "id": "the_coinage:gold_coin" },
+    "title": { "translate": "advancement.the_coinage.first_gold.title" },
+    "description": { "translate": "advancement.the_coinage.first_gold.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "gold": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": "the_coinage:gold_coin" }] }
+    }
+  },
+  "requirements": [["gold"]]
+}
