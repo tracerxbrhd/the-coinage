@@ -1,0 +1,71 @@
+name: Submit Modrinth Project
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    name: Validate and submit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate project and request public review
+        shell: python
+        env:
+          MODRINTH_PROJECT_ID: ${{ vars.MODRINTH_PROJECT_ID }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: |
+          import json
+          import os
+          import urllib.request
+
+          project_id = os.environ["MODRINTH_PROJECT_ID"].strip()
+          token = os.environ["MODRINTH_TOKEN"].strip()
+          if not project_id or not token:
+              raise SystemExit("MODRINTH_PROJECT_ID and MODRINTH_TOKEN are required")
+
+          base = "https://api.modrinth.com/v2"
+          headers = {
+              "Authorization": token,
+              "Content-Type": "application/json",
+              "User-Agent": "tracerxbrhd/the-coinage release workflow",
+          }
+
+          def request(path, method="GET", body=None):
+              data = None if body is None else json.dumps(body).encode("utf-8")
+              req = urllib.request.Request(base + path, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req) as response:
+                  payload = response.read()
+                  return None if not payload else json.loads(payload)
+
+          project = request(f"/project/{project_id}")
+          versions = request(f"/project/{project_id}/version")
+          required = {
+              "slug": project.get("slug"),
+              "title": project.get("title"),
+              "description": project.get("description"),
+              "body": project.get("body"),
+              "icon_url": project.get("icon_url"),
+              "versions": versions,
+          }
+          missing = [name for name, value in required.items() if not value]
+          if missing:
+              raise SystemExit("Project is not ready for review; missing: " + ", ".join(missing))
+
+          status = project["status"]
+          print(f"Project: {project['title']} ({project['slug']})")
+          print(f"Current status: {status}; uploaded versions: {len(versions)}")
+          if status == "draft":
+              request(f"/project/{project_id}", "PATCH", {
+                  "status": "processing",
+                  "requested_status": "approved",
+              })
+              project = request(f"/project/{project_id}")
+              print(f"Submitted for public review: {project['status']}")
+          elif status in {"processing", "approved", "unlisted"}:
+              print("No status change required.")
+          else:
+              raise SystemExit(f"Project cannot be submitted automatically from status: {status}")
