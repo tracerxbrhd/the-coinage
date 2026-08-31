@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="img/the-coinage-logo.png" alt="The Coinage" width="320">
-</p>
-
 ![The Coinage banner](img/the-coinage-banner.png)
 
 # The Coinage
