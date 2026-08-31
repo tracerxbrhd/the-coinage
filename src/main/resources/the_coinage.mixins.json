@@ -4,7 +4,7 @@
   "package": "io.github.tracerxbrhd.thecoinage.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MerchantContainerMixin",
+    "ItemCostMixin",
     "MerchantResultSlotMixin"
   ],
   "client": [],

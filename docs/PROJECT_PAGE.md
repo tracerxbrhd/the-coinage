@@ -12,7 +12,7 @@ Coins are items: they can be found, traded, stored, dropped on death and handled
 
 ## Coin Purse
 
-The Coin Purse automatically accepts collected coins, supports direct deposits and withdrawals, displays its contents and pays Coinage merchant offers without manual extraction. Curios and Accessories can equip it when present.
+The Coin Purse automatically accepts collected coins, supports direct deposits and withdrawals, and displays its contents. Merchant offers use physical coin stacks withdrawn into the inventory, keeping trading explicit and familiar. Curios and Accessories can equip the purse when present.
 
 ## A second economy — not an Emerald replacement
 

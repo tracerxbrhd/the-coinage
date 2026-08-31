@@ -1,63 +1,43 @@
 package io.github.tracerxbrhd.thecoinage.client;
 
-import io.github.tracerxbrhd.thecoinage.api.currency.CurrencyMath;
-import io.github.tracerxbrhd.thecoinage.api.currency.Denomination;
 import io.github.tracerxbrhd.thecoinage.menu.PurseMenu;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 public final class PurseScreen extends AbstractContainerScreen<PurseMenu> {
+    private static final ResourceLocation CONTAINER_BACKGROUND =
+        ResourceLocation.withDefaultNamespace("textures/gui/container/generic_54.png");
+    private static final ResourceLocation SLOT_SPRITE =
+        ResourceLocation.withDefaultNamespace("container/slot");
+
     public PurseScreen(PurseMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         imageWidth = 176;
-        imageHeight = 166;
-        inventoryLabelY = 72;
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        for (Denomination denomination : Denomination.values()) {
-            int row = denomination.ordinal();
-            addRenderableWidget(Button.builder(Component.literal("-"), button -> {
-                if (menu.clickMenuButton(minecraft.player, row)) {
-                    minecraft.gameMode.handleInventoryButtonClick(menu.containerId, row);
-                }
-            }).bounds(leftPos + 146, topPos + 17 + row * 18, 18, 16).build());
-        }
+        imageHeight = 132;
     }
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF201A16);
-        graphics.fill(leftPos + 4, topPos + 4, leftPos + imageWidth - 4, topPos + 70, 0xFF3A2A20);
-        graphics.fill(leftPos + 4, topPos + 75, leftPos + imageWidth - 4, topPos + imageHeight - 4, 0xFF8B8B8B);
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                int x = leftPos + 7 + column * 18;
-                int y = topPos + 83 + row * 18;
-                graphics.fill(x, y, x + 18, y + 18, 0xFF373737);
-            }
-        }
-        for (int column = 0; column < 9; column++) {
-            int x = leftPos + 7 + column * 18;
-            graphics.fill(x, topPos + 141, x + 18, topPos + 159, 0xFF373737);
+        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + 36, 0xFFC6C6C6);
+        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + 1, 0xFFFFFFFF);
+        graphics.fill(leftPos, topPos, leftPos + 1, topPos + 36, 0xFFFFFFFF);
+        graphics.fill(leftPos + imageWidth - 1, topPos, leftPos + imageWidth, topPos + 36, 0xFF555555);
+        graphics.fill(leftPos, topPos + 35, leftPos + imageWidth, topPos + 36, 0xFF555555);
+        graphics.blit(CONTAINER_BACKGROUND, leftPos, topPos + 36, 0, 126, imageWidth, 96);
+
+        for (int index = 0; index < PurseMenu.PURSE_SLOT_COUNT; index++) {
+            Slot slot = menu.getSlot(index);
+            graphics.blitSprite(SLOT_SPRITE, leftPos + slot.x - 1, topPos + slot.y - 1, 18, 18);
         }
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, 8, 6, 0xF2C46D, false);
-        for (Denomination denomination : Denomination.values()) {
-            graphics.drawString(font, Component.translatable("screen.the_coinage.purse.balance",
-                Component.translatable(denomination.translationKey()),
-                CurrencyMath.formatNormalized(menu.balance(denomination))), 12, 21 + denomination.ordinal() * 18,
-                0xF4E5CB, false);
-        }
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xFFFFFF, false);
+        // Intentionally empty: display stacks use Minecraft's native count overlay.
     }
 
     @Override

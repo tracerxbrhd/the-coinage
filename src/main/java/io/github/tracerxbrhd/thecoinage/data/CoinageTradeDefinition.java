@@ -18,6 +18,11 @@ public record CoinageTradeDefinition(ResourceLocation id, String target, int lev
                                      CurrencyAmount currencyCost, ResourceLocation itemCost, int itemCostCount,
                                      ResourceLocation resultItem, int resultCount, CurrencyAmount currencyReward,
                                      int maxUses, int xp, float priceMultiplier) {
+    public static CoinageTradeDefinition exchange(ResourceLocation id, CurrencyAmount cost, CurrencyAmount reward) {
+        return new CoinageTradeDefinition(id, "wandering_generic", 1, 1, cost, null, 0,
+            null, 0, reward, 12, 1, 0.0F);
+    }
+
     public static CoinageTradeDefinition parse(ResourceLocation id, JsonObject json) {
         int format = GsonHelper.getAsInt(json, "format_version", 1);
         if (format != 1) throw new IllegalArgumentException("unsupported format_version " + format);
@@ -33,6 +38,10 @@ public record CoinageTradeDefinition(ResourceLocation id, String target, int lev
         if ("currency".equals(costType)) {
             currencyCost = currency(cost);
             if (currencyCost.count() < 1) throw new IllegalArgumentException("currency cost must be positive");
+            int maximum = CoinageItems.coin(currencyCost.denomination()).getDefaultMaxStackSize();
+            if (currencyCost.count() > maximum) {
+                throw new IllegalArgumentException("currency cost must fit in one merchant slot (max " + maximum + ")");
+            }
         } else if ("item".equals(costType)) {
             itemCost = ResourceLocation.parse(requiredString(cost, "item"));
             itemCostCount = range(GsonHelper.getAsInt(cost, "count", 1), 1, 64, "item cost count");
@@ -67,8 +76,10 @@ public record CoinageTradeDefinition(ResourceLocation id, String target, int lev
         ItemCost cost;
         if (currencyCost != null) {
             Item item = CoinageItems.coin(currencyCost.denomination());
-            int visualCount = (int) Math.min(currencyCost.count(), item.getDefaultMaxStackSize());
-            cost = new ItemCost(item, visualCount).withComponents(builder ->
+            if (currencyCost.count() > item.getDefaultMaxStackSize()) {
+                throw new IllegalStateException("currency cost does not fit in one merchant slot: " + currencyCost);
+            }
+            cost = new ItemCost(item, (int) currencyCost.count()).withComponents(builder ->
                 builder.expect(CoinageDataComponents.MERCHANT_PRICE.get(), currencyCost));
         } else {
             Item item = BuiltInRegistries.ITEM.get(itemCost);
