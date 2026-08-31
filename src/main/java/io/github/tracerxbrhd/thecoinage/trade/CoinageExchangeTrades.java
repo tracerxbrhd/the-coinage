@@ -14,8 +14,10 @@ public final class CoinageExchangeTrades {
 
     public static MerchantOffer create(CurrencyAmount cost, CurrencyAmount reward) {
         Item costItem = CoinageItems.coin(cost.denomination());
-        int visualCost = (int) Math.min(cost.count(), costItem.getDefaultMaxStackSize());
-        ItemCost itemCost = new ItemCost(costItem, visualCost).withComponents(builder ->
+        if (cost.count() > costItem.getDefaultMaxStackSize()) {
+            throw new IllegalArgumentException("currency cost does not fit in one merchant slot: " + cost);
+        }
+        ItemCost itemCost = new ItemCost(costItem, (int) cost.count()).withComponents(builder ->
             builder.expect(CoinageDataComponents.MERCHANT_PRICE.get(), cost));
 
         Item rewardItem = CoinageItems.coin(reward.denomination());

@@ -1,8 +1,7 @@
 package io.github.tracerxbrhd.thecoinage.mixin;
 
-import io.github.tracerxbrhd.thecoinage.api.currency.CurrencyAmount;
+import io.github.tracerxbrhd.thecoinage.api.currency.CurrencyExchangeTable;
 import io.github.tracerxbrhd.thecoinage.api.currency.CurrencyRules;
-import io.github.tracerxbrhd.thecoinage.api.currency.Denomination;
 import io.github.tracerxbrhd.thecoinage.config.CoinageServerConfig;
 import io.github.tracerxbrhd.thecoinage.trade.CoinageExchangeTrades;
 import io.github.tracerxbrhd.thecoinage.trade.MerchantCurrencySupport;
@@ -25,17 +24,8 @@ public abstract class WanderingTraderMixin {
         }
 
         CurrencyRules rules = CoinageServerConfig.currencyRules();
-        offers.add(CoinageExchangeTrades.create(
-            new CurrencyAmount(Denomination.COPPER, rules.copperPerSilver()),
-            new CurrencyAmount(Denomination.SILVER, 1)));
-        offers.add(CoinageExchangeTrades.create(
-            new CurrencyAmount(Denomination.SILVER, 1),
-            new CurrencyAmount(Denomination.COPPER, rules.copperPerSilver())));
-        offers.add(CoinageExchangeTrades.create(
-            new CurrencyAmount(Denomination.SILVER, rules.silverPerGold()),
-            new CurrencyAmount(Denomination.GOLD, 1)));
-        offers.add(CoinageExchangeTrades.create(
-            new CurrencyAmount(Denomination.GOLD, 1),
-            new CurrencyAmount(Denomination.SILVER, rules.silverPerGold())));
+        for (CurrencyExchangeTable.Exchange exchange : CurrencyExchangeTable.forRules(rules)) {
+            offers.add(CoinageExchangeTrades.create(exchange.cost(), exchange.reward()));
+        }
     }
 }

@@ -3,6 +3,7 @@ build/
 out/
 run/
 run-*/
+logs/
 .idea/
 *.iml
 *.class

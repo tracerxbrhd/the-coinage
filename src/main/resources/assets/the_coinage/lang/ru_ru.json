@@ -24,7 +24,7 @@
   "message.the_coinage.received": "+ %s %s",
   "screen.the_coinage.purse.balance": "%s: %s",
   "tooltip.the_coinage.merchant_price": "Цена: %s %s",
-  "tooltip.the_coinage.purse.controls": "ПКМ по монетам — положить; ПКМ по пустому месту — достать",
+  "tooltip.the_coinage.purse.controls": "Откройте кошель, чтобы положить или достать монеты",
   "tooltip.the_coinage.purse.format": "Формат хранилища: %s",
   "tooltip.the_coinage.purse.invalid": "Повреждённые или неподдерживаемые данные кошеля",
   "tooltip.the_coinage.purse.line": "%s: %s",

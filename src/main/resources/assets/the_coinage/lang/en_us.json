@@ -24,7 +24,7 @@
   "message.the_coinage.received": "+ %s %s",
   "screen.the_coinage.purse.balance": "%s: %s",
   "tooltip.the_coinage.merchant_price": "Price: %s %s",
-  "tooltip.the_coinage.purse.controls": "Right-click coins to deposit; right-click empty space to withdraw",
+  "tooltip.the_coinage.purse.controls": "Open the purse to store or withdraw coins",
   "tooltip.the_coinage.purse.format": "Stored format: %s",
   "tooltip.the_coinage.purse.invalid": "Invalid or unsupported purse data",
   "tooltip.the_coinage.purse.line": "%s: %s",
