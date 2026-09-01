@@ -130,6 +130,16 @@ tasks.register('validateResources') {
         if (!missingRu.empty || !missingEn.empty) {
             throw new GradleException("Translation keys differ. Missing ru_ru=${missingRu}; missing en_us=${missingEn}")
         }
+        [
+            'data/curios/tags/item/curio.json',
+            'data/accessories/tags/item/belt.json',
+            'data/accessories/tags/item/charm.json'
+        ].each { relativePath ->
+            def tag = jsonSlurper.parse(new File(resourceDirectory, relativePath)) as Map
+            if (!(tag.values instanceof List) || !tag.values.contains('the_coinage:coin_purse')) {
+                throw new GradleException("Coin Purse is missing from accessory tag ${relativePath}")
+            }
+        }
     }
 }
 

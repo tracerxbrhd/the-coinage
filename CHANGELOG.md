@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed Coin Purse equipability in Curios slots, including setups using Accessories Compatibility Layer.
+- Added native Accessories support for the Belt and Charm slots.
+
 ## 1.0.0
 
 - Initial public release.

@@ -20,7 +20,7 @@ The Coinage adds an ancient physical currency to Minecraft: Copper, Silver and G
 - Java 21 for Minecraft 1.21.1; Java 25 for Minecraft 26.2
 - [U-API](https://github.com/tracerxbrhd/u-api) (required)
 
-Curios and Accessories are optional. The Coinage does not require other Underworld Studio gameplay mods.
+Curios and Accessories are optional. The Coin Purse fits any Curios slot and the Accessories Belt and Charm slots. The Coinage does not require other Underworld Studio gameplay mods.
 
 ## Installation
 
