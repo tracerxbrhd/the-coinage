@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 - 2026-09-01
+
+- Limited incompatible optional Curios and Accessories API warnings to once per provider so routine
+  purse searches cannot flood server logs while the graceful no-integration fallback remains active.
+- Verified the release build against U-API 2.1.2 without raising the existing compatible runtime
+  dependency range.
+
 ## 1.0.1
 
 - Fixed Coin Purse equipability in Curios slots, including setups using Accessories Compatibility Layer.

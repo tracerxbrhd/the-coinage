@@ -10,12 +10,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 
 /** Loader-safe mutable adapters. Optional API classes never appear in unconditional signatures. */
 public final class AccessoryPurseAdapter {
+    private static final AtomicBoolean WARNED_CURIO_ACCESS = new AtomicBoolean();
+    private static final AtomicBoolean WARNED_ACCESSORIES_ACCESS = new AtomicBoolean();
+
     private AccessoryPurseAdapter() {}
 
     public static Optional<PurseHandle> find(Player player) {
@@ -42,7 +46,8 @@ public final class AccessoryPurseAdapter {
             Object inventory = handler.getClass().getMethod("getEquippedCurios").invoke(handler);
             return findInHandler(inventory, "curios");
         } catch (ReflectiveOperationException | LinkageError exception) {
-            TheCoinage.LOGGER.warn("Curios is installed but mutable purse access is unavailable", exception);
+            if (WARNED_CURIO_ACCESS.compareAndSet(false, true))
+                TheCoinage.LOGGER.warn("Curios is installed but mutable purse access is unavailable", exception);
             return Optional.empty();
         }
     }
@@ -64,7 +69,8 @@ public final class AccessoryPurseAdapter {
                 if (found.isPresent()) return found;
             }
         } catch (ReflectiveOperationException | LinkageError exception) {
-            TheCoinage.LOGGER.warn("Accessories is installed but mutable purse access is unavailable", exception);
+            if (WARNED_ACCESSORIES_ACCESS.compareAndSet(false, true))
+                TheCoinage.LOGGER.warn("Accessories is installed but mutable purse access is unavailable", exception);
         }
         return Optional.empty();
     }
