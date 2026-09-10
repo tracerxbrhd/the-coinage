@@ -34,4 +34,6 @@ The Coinage is part of the Underworld Studio ecosystem and uses U-API as its sha
 
 ## License
 
-All Rights Reserved. See [LICENSE](LICENSE).
+The Coinage source code is licensed under the [Mozilla Public License 2.0](LICENSE).
+
+Underworld Studio names, logos, branding, and trademarks are not licensed under the MPL-2.0. Third-party software, Minecraft/NeoForge materials, and other third-party components remain subject to their respective licenses and terms.
