@@ -1,13 +1,13 @@
 ![The Coinage banner](img/the-coinage-banner.png)
 
-# The Coinage
-
 <p align="center">
   <a href="https://github.com/tracerxbrhd/the-coinage/releases"><img alt="Release" src="https://img.shields.io/github/v/release/tracerxbrhd/the-coinage?include_prereleases&sort=semver&label=release"></a>
   <a href="https://github.com/tracerxbrhd/the-coinage/actions/workflows/build.yml"><img alt="Build" src="https://github.com/tracerxbrhd/the-coinage/actions/workflows/build.yml/badge.svg?branch=master"></a>
   <a href="https://modrinth.com/mod/the-coinage"><img alt="Modrinth" src="https://img.shields.io/badge/Modrinth-Download-00AF5C?logo=modrinth&logoColor=white"></a>
   <a href="https://www.curseforge.com/minecraft/mc-mods/the-coinage"><img alt="CurseForge" src="https://img.shields.io/badge/CurseForge-Download-F16436?logo=curseforge&logoColor=white"></a>
 </p>
+
+# The Coinage
 
 **The Coinage adds an ancient physical currency to Minecraft: Copper, Silver and Gold Coins, a specialized Coin Purse, new trading opportunities, world loot, archaeology rewards and a currency system designed for modded gameplay.**
 
